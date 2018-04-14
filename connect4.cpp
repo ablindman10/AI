@@ -2,8 +2,8 @@
 * Brian Skinner, Connect 6
 * 9 long, by 8 high
 */
-
-
+#include <stdlib.h>
+#include <time.h>
 #include <iostream>
 int board[9][8] = {0};
     //    x,y
@@ -13,10 +13,13 @@ int board[9][8] = {0};
 int human = 0;
 int AI = 0;
 
+int game_over = 0;
+
 void showBoard();
 int pushchip(int player, int slot);
 int is_win(int slot);
 void AI_move();
+int removechip(int player, int slot);
 
 
 int main(void) {
@@ -39,28 +42,101 @@ int main(void) {
   }
 
 
-  while(1) {
+  while(game_over == 0) {
 
     std::cout << "Enter a slot to play:";
     std::cin >> s;
-    pushchip(human,s);
+    while(s > 8 || s < 0)
+    {
+      std::cout << "Error, invalid chip placement. Try again." << std::endl;
+      std::cout << "Enter a slot to play:";
+      std::cin >> s;
+    }
+
+    while(pushchip(human, s) == -1)
+    {
+      std::cout << "Error, invalid chip placement. Try again." << std::endl;
+      std::cout << "Enter a slot to play:";
+      std::cin >> s;
+    }
+    if(is_win(s) == human){
+      std::cout << "HUMAN WINS!" << std::endl;
+      exit(0);
+    }
     std::cout << is_win(s) << std::endl;
-    //ai move
+    AI_move();
     showBoard();
 
 
   }
+
 
   return 1;
 }
 
 //try to win, else try to block player, else random move
 void AI_move() {
-
-
-
+//check if any moves allow ai to win
+for(int x = 0; x<= 8; x++){
+  if(pushchip(AI,x) != -1){
+    if(is_win(x) == AI){
+      std::cout << "AI WINS!" << std::endl;
+        game_over = 1;
+        return;
+    }
+    else {
+      removechip(AI, x);
+    }
+  }
 }
 
+  //no good move for ai, time to check for moves against human
+  for(int x = 0; x<= 8; x++){
+    if(pushchip(human,x) != -1){
+      if(is_win(x) == human){
+        removechip(human,x);
+        pushchip(AI,x);
+        return;
+      }
+      else
+        removechip(human,x);
+    }
+  }
+
+
+//make a random move
+int rand_num = 0;
+srand (time(NULL));
+rand_num = rand() % 8 + 1;
+
+while(pushchip(AI, rand_num) == -1){
+  rand_num = rand() % 8 + 1;
+}
+/*
+for(int x = 0; x <= 7; x++){
+  int temp;
+  temp = pushchip(AI, x);
+  //std::cout << " " << temp << " " << std::endl;
+  if(temp == 1) {
+    break;
+  }
+}
+return;
+*/
+}
+
+//removes a chip from the board
+int removechip(int player, int slot) {
+  int y = 7;
+
+  for(; y >= 0; y--) {
+    if(board[slot][y] == player){
+      board[slot][y] = 0;
+      return 1;
+    }
+  }
+    return -1;
+}
 
 
 
@@ -130,7 +206,7 @@ if(count == 6)
   return player; //player id of win
 //std::cout << "up + down "<< count << " " << std::endl;
 
-
+count = 0;
 //check "/"
 int x = x_pos;
 int y = y_pos;
@@ -207,8 +283,8 @@ return 0;
 
 int pushchip(int player, int slot) {
   int y = 7;
-  if(board[slot][7] != 0) {
-    std::cout << "error slot full!" << std::endl;
+  if(board[slot][7] == 1 || board[slot][7] == 2) {
+    //std::cout << "error slot full!" << std::endl;
     return -1;
   }
   else {
