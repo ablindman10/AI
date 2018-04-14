@@ -44,8 +44,40 @@ int main(void) {
 
   while(game_over == 0) {
 
-    std::cout << "Enter a slot to play:";
-    std::cin >> s;
+    //ai goes first
+    if(human == 2) {
+      AI_move();
+      std::cout << std::endl;
+      showBoard();
+      std::cout << "Enter a slot to play:";
+      std::cin >> s;
+      while(s > 8 || s < 0)
+      {
+        std::cout << "Error, invalid chip placement. Try again." << std::endl;
+        std::cout << "Enter a slot to play:";
+        std::cin >> s;
+      }
+
+      while(pushchip(human, s) == -1)
+      {
+        std::cout << "Error, invalid chip placement. Try again." << std::endl;
+        std::cout << "Enter a slot to play:";
+        std::cin >> s;
+      }
+      if(is_win(s) == human){
+        std::cout << "HUMAN WINS!" << std::endl;
+        exit(0);
+      }
+      std::cout << is_win(s) << std::endl;
+      showBoard();
+
+
+    }
+
+    //human goes first
+    if(human == 1){
+      std::cout << "Enter a slot to play:";
+      std::cin >> s;
     while(s > 8 || s < 0)
     {
       std::cout << "Error, invalid chip placement. Try again." << std::endl;
@@ -67,6 +99,7 @@ int main(void) {
     AI_move();
     showBoard();
 
+  }
 
   }
 
@@ -79,7 +112,7 @@ void AI_move() {
 //check if any moves allow ai to win
 for(int x = 0; x<= 8; x++){
   if(pushchip(AI,x) != -1){
-    if(is_win(x) == AI){
+    if(is_win(x) == AI){ //ai wins, game is over
       std::cout << "AI WINS!" << std::endl;
         game_over = 1;
         return;
@@ -104,28 +137,17 @@ for(int x = 0; x<= 8; x++){
   }
 
 
-//make a random move
-int rand_num = 0;
-srand (time(NULL));
-rand_num = rand() % 8 + 1;
-
-while(pushchip(AI, rand_num) == -1){
+  //make a random move
+  int rand_num = 0;
+  srand (time(NULL));
   rand_num = rand() % 8 + 1;
-}
-/*
-for(int x = 0; x <= 7; x++){
-  int temp;
-  temp = pushchip(AI, x);
-  //std::cout << " " << temp << " " << std::endl;
-  if(temp == 1) {
-    break;
+
+  while(pushchip(AI, rand_num) == -1){
+    rand_num = rand() % 8 + 1;
   }
 }
-return;
-*/
-}
 
-//removes a chip from the board
+//removes a chip from the board, used for simulating moves
 int removechip(int player, int slot) {
   int y = 7;
 
@@ -280,7 +302,7 @@ return 0;
 
 
 
-
+//put the chip into the board, pushes to bottem
 int pushchip(int player, int slot) {
   int y = 7;
   if(board[slot][7] == 1 || board[slot][7] == 2) {
@@ -306,7 +328,7 @@ int pushchip(int player, int slot) {
   return 1;
 }
 
-
+//show the board
 void showBoard() {
 
   for(int y = 7; y >= 0; y--) {
