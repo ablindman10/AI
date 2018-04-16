@@ -47,6 +47,7 @@ int main(void) {
   while(game_over == 0) {
     if(is_draw() == 1){
       std::cout << "DRAW\n";
+      showBoard();
       exit(0);
     }
     //ai goes first
