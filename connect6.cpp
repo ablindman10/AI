@@ -1,5 +1,6 @@
 /*
-* Brian Skinner, Connect 6
+* Connect 6
+* Brian Skinner, Essoniwa Pitoko, Tizanae Nziramasanga
 * 9 long, by 8 high
 */
 #include <stdlib.h>
@@ -49,7 +50,7 @@ int main(void) {
       AI_move();
       std::cout << std::endl;
       showBoard();
-      std::cout << "Enter a slot to play:";
+      std::cout << "Enter a vertical slot # (0-8) to play:";
       std::cin >> s;
       while(s > 8 || s < 0)
       {
@@ -66,9 +67,9 @@ int main(void) {
       }
       if(is_win(s) == human){
         std::cout << "HUMAN WINS!" << std::endl;
-        exit(0);
+        game_over=1;
       }
-      std::cout << is_win(s) << std::endl;
+      // std::cout << is_win(s) << std::endl;
       showBoard();
 
 
@@ -76,7 +77,7 @@ int main(void) {
 
     //human goes first
     if(human == 1){
-      std::cout << "Enter a slot to play:";
+      std::cout << "Enter a vertical slot # (0-8) to play:";
       std::cin >> s;
     while(s > 8 || s < 0)
     {
@@ -93,9 +94,9 @@ int main(void) {
     }
     if(is_win(s) == human){
       std::cout << "HUMAN WINS!" << std::endl;
-      exit(0);
+      game_over=1;
     }
-    std::cout << is_win(s) << std::endl;
+    // std::cout << is_win(s) << std::endl;
     AI_move();
     showBoard();
 
@@ -140,10 +141,10 @@ for(int x = 0; x<= 8; x++){
   //make a random move
   int rand_num = 0;
   srand (time(NULL));
-  rand_num = rand() % 8 + 1;
+  rand_num = rand() % 9;
 
   while(pushchip(AI, rand_num) == -1){
-    rand_num = rand() % 8 + 1;
+    rand_num = rand() % 9;
   }
 }
 
@@ -203,7 +204,7 @@ count--;
 
 //std::cout << "left + right "<< count << " " << std::endl;
 //check for win
-if(count == 6)
+if(count >= 6)
   return player; //player id of win
 
 count = 0; //reset
@@ -224,7 +225,7 @@ for(int y = y_pos; y>= 0; y--) { //check down
 }
 count--;
 //check for win
-if(count == 6)
+if(count >= 6)
   return player; //player id of win
 //std::cout << "up + down "<< count << " " << std::endl;
 
@@ -258,7 +259,7 @@ while(x >= 0 && y >= 0)//down-left
 
 //remove overlap
 count--;
-if(count == 6)
+if(count >= 6)
   return player; //player id of win
 //std::cout << " / "<< count << " " << std::endl;
 
@@ -292,7 +293,7 @@ while(x <= 8 && y >= 0)//down-right
 
 //remove overlap
 count--;
-if(count == 6)
+if(count >= 6)
   return player; //player id of win
 //std::cout << " \\ "<< count << " " << std::endl;
 
