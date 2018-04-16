@@ -21,6 +21,7 @@ int pushchip(int player, int slot);
 int is_win(int slot);
 void AI_move();
 int removechip(int player, int slot);
+int is_draw();
 
 
 int main(void) {
@@ -44,7 +45,10 @@ int main(void) {
 
 
   while(game_over == 0) {
-
+    if(is_draw() == 1){
+      std::cout << "DRAW\n";
+      exit(0);
+    }
     //ai goes first
     if(human == 2) {
       AI_move();
@@ -107,6 +111,16 @@ int main(void) {
 
   return 1;
 }
+
+int is_draw(){
+  for(int x = 0; x <= 8; x++){
+    if(board[x][7] == 0) //if a free spot exsists, game is not over
+      return 0;
+  }
+  return 1;
+}
+
+
 
 //try to win, else try to block player, else random move
 void AI_move() {
